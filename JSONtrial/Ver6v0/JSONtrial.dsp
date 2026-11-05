@@ -93,27 +93,11 @@ SOURCE=..\Source\BJSONNodeCollection.cpp
 # End Group
 # Begin Source File
 
-SOURCE=..\Source\CJSONArray.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Source\CJSONBool.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\Source\CJSONDocument.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Source\CJSONNumber.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Source\CJSONObject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Source\CJSONString.cpp
+SOURCE=..\Source\CJSONValue.cpp
 # End Source File
 # Begin Source File
 
@@ -180,27 +164,11 @@ SOURCE=..\INCLUDE\VJSONNode.h
 # End Group
 # Begin Source File
 
-SOURCE=..\INCLUDE\CJSONArray.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\INCLUDE\CJSONBool.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\INCLUDE\CJSONDocument.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\INCLUDE\CJSONNumber.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\INCLUDE\CJSONObject.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\INCLUDE\CJSONString.h
+SOURCE=..\INCLUDE\CJSONValue.h
 # End Source File
 # Begin Source File
 

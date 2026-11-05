@@ -93,25 +93,25 @@ HRESULT CJSONDocument::WriteNewline(ISequentialStream* pstm)
 /*еееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее*/
 /*                               ВvВТВЙВФВЕ                                  */
 /*еееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее*/
-HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONNode* pobj)
+HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONValue* pobj)
 {
 	HRESULT		hResult;
 
 	switch(IsJSONNodeType(pobj->IsNodeType())) {
 		case JSONNodeType_String :
-			if (FAILED(hResult=Write(pstm, reinterpret_cast<JSONString*>(pobj)))) return(hResult);
+			if (FAILED(hResult=WriteString(pstm, pobj))) return(hResult);
 			break;
 		case JSONNodeType_Number :
-			if (FAILED(hResult=Write(pstm, reinterpret_cast<JSONNumber*>(pobj)))) return(hResult);
+			if (FAILED(hResult=WriteNumber(pstm, pobj))) return(hResult);
 			break;
 		case JSONNodeType_Bool :
-			if (FAILED(hResult=Write(pstm, reinterpret_cast<JSONBool*>(pobj)))) return(hResult);
+			if (FAILED(hResult=WriteBool(pstm, pobj))) return(hResult);
 			break;
 		case JSONNodeType_Array :
-			if (FAILED(hResult=Write(pstm, reinterpret_cast<JSONArray*>(pobj)))) return(hResult);
+			if (FAILED(hResult=WriteArray(pstm, pobj))) return(hResult);
 			break;
 		case JSONNodeType_Object :
-			if (FAILED(hResult=Write(pstm, reinterpret_cast<JSONObject*>(pobj)))) return(hResult);
+			if (FAILED(hResult=WriteObject(pstm, pobj))) return(hResult);
 			break;
 		default:
 			return(E_INVALIDARG);
@@ -119,26 +119,7 @@ HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONNode* pobj)
 
 	return(NOERROR);
 }
-HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONNumber* pobj)
-{
-	ULONG		byteWrite=0;
-	LONGLONG	nval=pobj->get_Long();
-	double		dval=pobj->get_Double();
-	char		str[256];
-	HRESULT		hResult;
-
-	if (dval == double(nval)) {
-		::sprintf_s(str, _countof(str), "%I64d", nval);
-		}
-	else{
-		::sprintf_s(str, _countof(str), "%1.17g", dval);
-		}
-
-	if (FAILED(hResult=pstm->Write(str, ULONG(::strlen(str)), &byteWrite))) return(hResult);
-
-	return(NOERROR);
-}
-HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONString* pobj)
+HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONKey* pobj)
 {
 	ULONG		byteWrite=0;
 	LPCSTR		str=pobj->get_String();
@@ -161,7 +142,48 @@ HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONString* pobj)
 
 	return(NOERROR);
 }
-HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONBool* pobj)
+HRESULT CJSONDocument::WriteNumber(ISequentialStream* pstm, JSONValue* pobj)
+{
+	ULONG		byteWrite=0;
+	LONGLONG	nval=pobj->get_Long();
+	double		dval=pobj->get_Double();
+	char		str[256];
+	HRESULT		hResult;
+
+	if (dval == double(nval)) {
+		::sprintf_s(str, _countof(str), "%I64d", nval);
+		}
+	else{
+		::sprintf_s(str, _countof(str), "%1.17g", dval);
+		}
+
+	if (FAILED(hResult=pstm->Write(str, ULONG(::strlen(str)), &byteWrite))) return(hResult);
+
+	return(NOERROR);
+}
+HRESULT CJSONDocument::WriteString(ISequentialStream* pstm, JSONValue* pobj)
+{
+	ULONG		byteWrite=0;
+	LPCSTR		str=pobj->get_String();
+	size_t		nSize;
+	HRESULT		hResult;
+
+	if ((!str) || ((nSize=::strlen(str)) == 0)) return(pstm->Write("null", 4, &byteWrite));
+
+	if (FAILED(hResult=pstm->Write("\"", 1, &byteWrite))) return(hResult);
+	while(nSize) {
+		size_t	nBytes=nSize;
+
+		if ((100*1024*1024) < nBytes) nBytes = (100*1024*1024);
+		if (FAILED(hResult=pstm->Write(str, ULONG(nBytes), &byteWrite))) return(hResult);
+		str += nBytes;
+		nSize -= nBytes;
+		}
+	if (FAILED(hResult=pstm->Write("\"", 1, &byteWrite))) return(hResult);
+
+	return(NOERROR);
+}
+HRESULT CJSONDocument::WriteBool(ISequentialStream* pstm, JSONValue* pobj)
 {
 	ULONG		byteWrite=0;
 	HRESULT		hResult;
@@ -175,7 +197,7 @@ HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONBool* pobj)
 
 	return(NOERROR);
 }
-HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONArray* pobj)
+HRESULT CJSONDocument::WriteArray(ISequentialStream* pstm, JSONValue* pobj)
 {
 	ULONG		byteWrite;
 	size_t		nLoop, nSize=pobj->NodeSize();
@@ -187,7 +209,7 @@ HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONArray* pobj)
 	if (nSize) {
 		m_stack++;
 		for(nLoop=0; nLoop<nSize; nLoop++) {
-			JSONAnchorPtr<JSONNode>	pnode;
+			JSONAnchorPtr<JSONValue>	pnode;
 
 			if (FAILED(hResult=pobj->Node(int(nLoop), pnode))) return(hResult);
 // value
@@ -207,7 +229,7 @@ HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONArray* pobj)
 
 	return(NOERROR);
 }
-HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONObject* pobj)
+HRESULT CJSONDocument::WriteObject(ISequentialStream* pstm, JSONValue* pobj)
 {
 	ULONG		byteWrite;
 	size_t		nLoop, nSize=pobj->NodeSize();
@@ -219,14 +241,14 @@ HRESULT CJSONDocument::Write(ISequentialStream* pstm, JSONObject* pobj)
 	if (nSize) {
 		m_stack++;
 		for(nLoop=0; nLoop<nSize; nLoop++) {
-			JSONAnchorPtr<JSONNode>		pnode;
-			JSONAnchorPtr<JSONString>	pkey;
+			JSONAnchorPtr<JSONValue>	pnode;
+			JSONAnchorPtr<JSONKey>		pkey;
 
 			if (FAILED(hResult=pobj->Node(int(nLoop), pnode))) return(hResult);
 			if (FAILED(hResult=WriteIndent(pstm))) return(hResult);
 // string
 			if (FAILED(hResult=pnode->Key(pkey))) return(hResult);
-			if (pkey->IsNodeType() != JSONNodeType_String) return(E_FAIL);
+			if (pkey->IsNodeType() != JSONNodeType_Key) return(E_FAIL);
 			if (FAILED(hResult=Write(pstm, pkey))) return(hResult);
 			pkey.Destroy();
 // :
@@ -300,7 +322,7 @@ HRESULT CJSONDocument::CreateNode(JSONNodeType type, void** ppobj)
 	if (FAILED(hResult=BJSONNodeCollection::Create(&m_XDescendant, type, m_pnode, &pmem))) return(hResult);
 
 	m_pnode->Keep();
-	*ppobj = static_cast<JSONNode*>(m_pnode);
+	*ppobj = static_cast<JSONValue*>(m_pnode);
 	return(NOERROR);
 }
 
@@ -312,7 +334,7 @@ HRESULT CJSONDocument::Node(void** ppobj)
 	if (m_pnode.IsNull()) return(E_INVALIDARG);
 
 	m_pnode->Keep();
-	*ppobj = static_cast<JSONNode*>(m_pnode);
+	*ppobj = static_cast<JSONValue*>(m_pnode);
 	return(NOERROR);
 }
 

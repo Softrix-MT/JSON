@@ -88,9 +88,7 @@ static HRESULT OnTextLoad(void)
 static HRESULT OnCreateNode(void)
 {
 	JSONAnchorPtr<JSONDocument>	pjson;
-	JSONAnchorPtr<JSONObject>	proot;
-	JSONAnchorPtr<JSONString>	pstr;
-	JSONAnchorPtr<JSONNumber>	pnum;
+	JSONAnchorPtr<JSONValue>	proot, pstr, pnum;
 	TCHAR						path[MAX_PATH];
 	HRESULT						hResult;
 
@@ -99,15 +97,15 @@ static HRESULT OnCreateNode(void)
 
 	if (FAILED(hResult=pjson->CreateNode(JSONNodeType_Object, proot))) return(hResult);
 
-	if (FAILED(hResult=proot->CreateNode(JSONNodeType_String, "key1", pstr))) return(hResult);
+	if (FAILED(hResult=proot->CreateNode(JSONNodeType_String, pstr, "key1"))) return(hResult);
 	if (FAILED(hResult=pstr->set_UTF16(UNI("value1"), -1))) return(hResult);
 	pstr.Destroy();
 
-	if (FAILED(hResult=proot->CreateNode(JSONNodeType_String, "key2", pstr))) return(hResult);
+	if (FAILED(hResult=proot->CreateNode(JSONNodeType_String, pstr, "key2"))) return(hResult);
 	if (FAILED(hResult=pstr->set_ACP("value2", -1))) return(hResult);
 	pstr.Destroy();
 
-	if (FAILED(hResult=proot->CreateNode(JSONNodeType_Number, "key3", pnum))) return(hResult);
+	if (FAILED(hResult=proot->CreateNode(JSONNodeType_Number, pnum, "key3"))) return(hResult);
 	pnum->set_Double(0.00000000000000123456789);
 	pnum.Destroy();
 

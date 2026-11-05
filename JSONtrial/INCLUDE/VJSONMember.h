@@ -10,18 +10,17 @@
 /*                                ƒNƒ‰ƒX’è‹`                                 */
 /*****************************************************************************/
 class VJSONMember : public VJSONNode {
-	class XJSONString : public JSONString, public VJSONNode, public BStringControl {
+	class XJSONKey : public JSONKey, public VJSONNode, public BStringControl {
 		public:
-									XJSONString(void) {}
-			virtual					~XJSONString(void) {}
+									XJSONKey(void) {}
+			virtual					~XJSONKey(void) {}
 
 		public:
 			virtual ULONG			Keep(void) { return(VJSONNode::Keep()); }
 			virtual ULONG			Discard(void){ return(VJSONNode::Discard()); }
 
 		public:
-			virtual JSONNodeType	IsNodeType(void) { return((m_str != NULL) ? JSONNodeType_String : JSONNodeType_Null); }
-			virtual HRESULT			Key(void** ppobj) { return(E_NOTIMPL); }
+			virtual JSONNodeType	IsNodeType(void) { return(JSONNodeType_Key); }
 
 		public:
 			virtual LPCSTR			get_String(void) { return(m_str); }
@@ -35,7 +34,7 @@ class VJSONMember : public VJSONNode {
 	};
 	protected:
 		bool						m_keyEnable;
-		XJSONString					m_key;
+		XJSONKey					m_key;
 
 	public:
 									VJSONMember(JSONAnchor* pobj);
@@ -79,7 +78,7 @@ inline HRESULT VJSONMember::Key(void** ppobj)
 {
 	if (!m_keyEnable) return(E_NOTIMPL);
 
-	*ppobj = static_cast<JSONString*>(&m_key);
+	*ppobj = static_cast<JSONKey*>(&m_key);
 	m_key.Keep();
 	return(NOERROR);
 }

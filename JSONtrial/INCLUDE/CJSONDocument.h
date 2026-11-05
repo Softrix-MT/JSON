@@ -33,7 +33,7 @@ class CJSONDocument : public JSONDocument, public VJSONAnchor {
 			HRESULT					Store(LPCSTR str);
 	};
 	protected:
-		JSONAnchorPtr<JSONNode>		m_pnode;
+		JSONAnchorPtr<JSONValue>	m_pnode;
 		XDescendant					m_XDescendant;
 
 	protected:
@@ -55,12 +55,13 @@ class CJSONDocument : public JSONDocument, public VJSONAnchor {
 	protected:
 		HRESULT						WriteIndent(ISequentialStream* pstm);
 		HRESULT						WriteNewline(ISequentialStream* pstm);
-		HRESULT						Write(ISequentialStream* pstm, JSONNode* pobj);
-		HRESULT						Write(ISequentialStream* pstm, JSONNumber* pobj);
-		HRESULT						Write(ISequentialStream* pstm, JSONString* pobj);
-		HRESULT						Write(ISequentialStream* pstm, JSONBool* pobj);
-		HRESULT						Write(ISequentialStream* pstm, JSONArray* pobj);
-		HRESULT						Write(ISequentialStream* pstm, JSONObject* pobj);
+		HRESULT						Write(ISequentialStream* pstm, JSONValue* pobj);
+		HRESULT						Write(ISequentialStream* pstm, JSONKey* pobj);
+		HRESULT						WriteNumber(ISequentialStream* pstm, JSONValue* pobj);
+		HRESULT						WriteString(ISequentialStream* pstm, JSONValue* pobj);
+		HRESULT						WriteBool(ISequentialStream* pstm, JSONValue* pobj);
+		HRESULT						WriteArray(ISequentialStream* pstm, JSONValue* pobj);
+		HRESULT						WriteObject(ISequentialStream* pstm, JSONValue* pobj);
 
 	public:
 		virtual HRESULT				Initialize(void);

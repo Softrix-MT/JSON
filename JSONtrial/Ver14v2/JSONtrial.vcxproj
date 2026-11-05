@@ -197,12 +197,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\BJSONNodeCollection.cpp" />
-    <ClCompile Include="..\Source\CJSONArray.cpp" />
-    <ClCompile Include="..\Source\CJSONBool.cpp" />
     <ClCompile Include="..\Source\CJSONDocument.cpp" />
-    <ClCompile Include="..\Source\CJSONNumber.cpp" />
-    <ClCompile Include="..\Source\CJSONObject.cpp" />
-    <ClCompile Include="..\Source\CJSONString.cpp" />
+    <ClCompile Include="..\Source\CJSONValue.cpp" />
     <ClCompile Include="..\Source\Support.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -216,12 +212,8 @@
     <ClInclude Include="..\INCLUDE\VJSONAnchor.h" />
     <ClInclude Include="..\INCLUDE\VJSONMember.h" />
     <ClInclude Include="..\INCLUDE\VJSONNode.h" />
-    <ClInclude Include="..\INCLUDE\CJSONArray.h" />
-    <ClInclude Include="..\INCLUDE\CJSONBool.h" />
     <ClInclude Include="..\INCLUDE\CJSONDocument.h" />
-    <ClInclude Include="..\INCLUDE\CJSONNumber.h" />
-    <ClInclude Include="..\INCLUDE\CJSONObject.h" />
-    <ClInclude Include="..\INCLUDE\CJSONString.h" />
+    <ClInclude Include="..\INCLUDE\CJSONValue.h" />
     <ClInclude Include="..\INCLUDE\StdHead.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

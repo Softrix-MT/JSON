@@ -17,7 +17,7 @@ class BString {
 		virtual						~BString(void);
 
 	public:
-//									operator LPCSTR();
+									operator LPCSTR();
 
 	protected:
 		void*						Reallocation(void* pbuf, size_t bytes) { return(::realloc(pbuf, memOPTIMUM(bytes))); }
@@ -58,13 +58,12 @@ inline BString::~BString(void)
 /*еееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее*/
 /*                      ВПВРВЕВТВБВФВПВТ  ВkВoВbВrВsВq                       */
 /*еееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее*/
-/*
 inline BString::operator LPCSTR(void)
 {
-	if (m_str) m_str[m_bytes-1] = NULL;
+//	if (m_str) m_str[m_bytes-1] = NULL;
 	return(m_str);
 }
-*/
+
 /*еееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее*/
 /*                         ВqВЕВБВМВМВПВГВБВФВЙВПВО                          */
 /*еееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееееее*/

@@ -92,6 +92,8 @@ typedef enum JSONNodeType {
 		JSONNodeType_I8			= 0x0041,						// LONGLONG
 		JSONNodeType_R4			= 0x0042,						// double
 		JSONNodeType_Bool		= 0x0050,
+
+		JSONNodeType_Key		= 0x0100,
 		} JSONNodeType;
 
 #define IsJSONNodeType(n)			(n&0xFFF0)
@@ -134,97 +136,63 @@ typedef struct tagJSONNode {
 		virtual ULONG				Discard(void) = 0;
 // JSONNode
 		virtual JSONNodeType		IsNodeType(void) = 0;
-		virtual HRESULT				Key(void** ppobj) = 0;
 		} JSONNode;
 
 /*---------------------------------------------------------------------------*/
-/*                           ÇiÇrÇnÇmÇrÇîÇíÇâÇéÇá                            */
+/*                              ÇiÇrÇnÇmÇjÇÖÇô                               */
 /*---------------------------------------------------------------------------*/
-typedef struct tagJSONString {
+typedef struct tagJSONKey {
 // JSONAnchor
 		virtual ULONG				Keep(void) = 0;
 		virtual ULONG				Discard(void) = 0;
 // JSONNode
 		virtual JSONNodeType		IsNodeType(void) = 0;
-		virtual HRESULT				Key(void** ppobj) = 0;
-// JSONString
+// JSONKey
 		virtual LPCSTR				get_String(void) = 0;					// UTF-8
-		virtual HRESULT				set_String(LPCSTR str) = 0;				// UTF-8
 
+		virtual HRESULT				set_String(LPCSTR str) = 0;				// UTF-8
 		virtual HRESULT				set_UTF8(LPCSTR str, size_t bytes) = 0;
 		virtual HRESULT				set_UTF16(LPCWSTR str, size_t length) = 0;
 		virtual HRESULT				set_CP(UINT CodePage, LPCSTR str, size_t bytes) = 0;
 		virtual HRESULT				set_ACP(LPCSTR str, size_t bytes) = 0;
-		} JSONString;
+		} JSONKey;
 
 /*---------------------------------------------------------------------------*/
-/*                           ÇiÇrÇnÇmÇmÇïÇçÇÇÇÖÇí                            */
+/*                            ÇiÇrÇnÇmÇuÇÅÇåÇïÇÖ                             */
 /*---------------------------------------------------------------------------*/
-typedef struct tagJSONNumber {
+typedef struct tagJSONValue {
 // JSONAnchor
 		virtual ULONG				Keep(void) = 0;
 		virtual ULONG				Discard(void) = 0;
 // JSONNode
 		virtual JSONNodeType		IsNodeType(void) = 0;
-		virtual HRESULT				Key(void** ppobj) = 0;
-// JSONNumber
+// String | JSONKey
+		virtual LPCSTR				get_String(void) = 0;					// UTF-8
+
+		virtual HRESULT				set_String(LPCSTR str) = 0;				// UTF-8
+		virtual HRESULT				set_UTF8(LPCSTR str, size_t bytes) = 0;
+		virtual HRESULT				set_UTF16(LPCWSTR str, size_t length) = 0;
+		virtual HRESULT				set_CP(UINT CodePage, LPCSTR str, size_t bytes) = 0;
+		virtual HRESULT				set_ACP(LPCSTR str, size_t bytes) = 0;
+// Number
 		virtual LONGLONG			get_Long(void) = 0;
 		virtual void				set_Long(LONGLONG val) = 0;
 		virtual double				get_Double(void) = 0;
 		virtual void				set_Double(double val) = 0;
-		} JSONNumber;
-
-/*---------------------------------------------------------------------------*/
-/*                             ÇiÇrÇnÇmÇaÇèÇèÇå                              */
-/*---------------------------------------------------------------------------*/
-typedef struct tagJSONBool {
-// JSONAnchor
-		virtual ULONG				Keep(void) = 0;
-		virtual ULONG				Discard(void) = 0;
-// JSONNode
-		virtual JSONNodeType		IsNodeType(void) = 0;
-		virtual HRESULT				Key(void** ppobj) = 0;
-// JSONBool
+// Bool
 		virtual bool				get_Bool(void) = 0;
 		virtual void				set_Bool(bool val) = 0;
-		} JSONBool;
-
-/*---------------------------------------------------------------------------*/
-/*                            ÇiÇrÇnÇmÇ`ÇíÇíÇÅÇô                             */
-/*---------------------------------------------------------------------------*/
-typedef struct tsgJSONArray {
-// JSONAnchor
-		virtual ULONG				Keep(void) = 0;
-		virtual ULONG				Discard(void) = 0;
-// JSONNode
-		virtual JSONNodeType		IsNodeType(void) = 0;
-		virtual HRESULT				Key(void** ppobj) = 0;
-// JSONArray
+// Array & Object
 		virtual int					NodeSize(void) = 0;
 		virtual HRESULT				Node(int index, void** ppobj) = 0;
-
-		virtual HRESULT				CreateNode(JSONNodeType type, void** ppobj) = 0;
 		virtual void				RemoveNode(int index) = 0;
-		} JSONArray;
-
-/*---------------------------------------------------------------------------*/
-/*                           ÇiÇrÇnÇmÇnÇÇÇäÇÖÇÉÇî                            */
-/*---------------------------------------------------------------------------*/
-typedef struct tagJSONObject {
-// JSONAnchor
-		virtual ULONG				Keep(void) = 0;
-		virtual ULONG				Discard(void) = 0;
-// JSONNode
-		virtual JSONNodeType		IsNodeType(void) = 0;
-		virtual HRESULT				Key(void** ppobj) = 0;
-// JSONObject
-		virtual int					NodeSize(void) = 0;
-		virtual HRESULT				Node(int index, void** ppobj) = 0;
-
-		virtual HRESULT				CreateNode(JSONNodeType type, LPCSTR key, void** ppobj) = 0;
+		virtual HRESULT				CreateNode(JSONNodeType type, void** ppobj, LPCSTR key) = 0;
+// Object
+		virtual int					FindNode(LPCSTR key) = 0;
 		virtual HRESULT				FindNode(LPCSTR key, void** ppobj) = 0;
-		virtual void				RemoveNode(LPCSTR key) = 0;
-		} JSONObject;
+// Member
+		virtual HRESULT				Key(void** ppobj) = 0;
+		} JSONValue;
 
 /*---------------------------------------------------------------------------*/
 /*                         ÇiÇrÇnÇmÇcÇèÇÉÇïÇçÇÖÇéÇî                          */

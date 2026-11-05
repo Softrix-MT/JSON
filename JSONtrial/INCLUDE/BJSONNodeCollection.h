@@ -12,7 +12,7 @@
 /*****************************************************************************/
 class BJSONNodeCollection {
 	protected:
-		BArray<JSONNode*>			m_node;
+		BArray<JSONValue*>			m_node;
 
 	public:
 									BJSONNodeCollection(void);
@@ -24,7 +24,7 @@ class BJSONNodeCollection {
 	public:
 		virtual int					FindNode(LPCSTR key);
 		virtual HRESULT				FindNode(LPCSTR key, void** ppvobj);
-		virtual HRESULT				AppendNode(JSONNode* pxml);
+		virtual HRESULT				AppendNode(JSONValue* pxml);
 		virtual void				RemoveNode(int index);
 		virtual void				RemoveNode(LPCSTR key);
 		virtual void				EmptyNode(void);
